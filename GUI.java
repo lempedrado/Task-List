@@ -6,10 +6,6 @@ import java.nio.file.*;
 import java.util.*;
 import javax.swing.border.TitledBorder;
 
-//checkboxes have too much space between them, i think they change to fill panel
-//title border doesnt span the full panel width, need to double check
-
-
 /**
  *  GUI
  *
@@ -33,6 +29,7 @@ public class GUI extends JFrame
     /** Item input field */
     protected JTextField input = new JTextField(25);
     protected File file;
+    protected String fileContents;
 
     /**
      *  GUI constructor
@@ -53,6 +50,9 @@ public class GUI extends JFrame
         menuBar.add(open);
         setJMenuBar(menuBar);
 
+        initialize();
+        content.setVisible(false);
+
         setVisible(true);
     }
 
@@ -64,20 +64,26 @@ public class GUI extends JFrame
     { 
         //creates two sections, the top having user operations and the bottom having the separated file content
         content = getContentPane();
-        content.setLayout(new FlowLayout());
-        content.add(top);
+        content.setLayout(new GridLayout(2, 0));
+        content.add(top, new Dimension(getWidth(), (int)(getHeight() * 0.2)));
         content.add(bottom);
 
         //user operation panel
-        top.setPreferredSize(new Dimension((int)getSize().getWidth(), 100));
+        //top.setPreferredSize(new Dimension((int)getSize().getWidth(), 100));
         InputHandler ih = new InputHandler(this);
         input.addActionListener(ih);
         top.add(input);
+
+        JButton button = new JButton("Add");
+        ButtonHandler bh = new ButtonHandler(this);
+        button.addActionListener(bh);
+        top.add(button);
         
+
         //adds bottom panel for file contents and adds two more panels for the left and right
-        bottom.setLayout(new BorderLayout());
-        bottom.add(left, BorderLayout.WEST);
-        bottom.add(right, BorderLayout.EAST);
+        bottom.setLayout(new GridLayout(0, 2));
+        bottom.add(left);//, BorderLayout.WEST);
+        bottom.add(right);//, BorderLayout.EAST);
 
 
         //panel titles
@@ -93,11 +99,12 @@ public class GUI extends JFrame
 
         //to-do panel
         left.setLayout(new BoxLayout(left, BoxLayout.PAGE_AXIS));
-        left.setAutoscrolls(true);
+        //left.setAutoscrolls(true);
         
         //completed panel
         right.setLayout(new BoxLayout(right, BoxLayout.PAGE_AXIS));
-        right.setAutoscrolls(true);
+        //right.setBounds(bottom.getX(), bottom.getY() + getWidth() / 2, getWidth() / 2, bottom.getHeight());
+        //right.setAutoscrolls(true);
 
         setVisible(true);
     }
@@ -114,7 +121,7 @@ public class GUI extends JFrame
     public void display(File f)
     {
         file = f;
-        initialize();
+        content.setVisible(true);
         BoxHandler bl = new BoxHandler(this);
         try
         {
@@ -122,8 +129,13 @@ public class GUI extends JFrame
             left.removeAll();
             right.removeAll();
 
+            //size of each checkbox
+            Dimension size = new Dimension(left.getWidth(), 10);
+
             //opens file and reads it line by line
             Scanner reader = new Scanner(f);
+            //initialize fileContents
+            fileContents = "";
             while(reader.hasNextLine())
             {
                 String line = reader.nextLine();
@@ -131,15 +143,20 @@ public class GUI extends JFrame
                 if(line.charAt(0) == '*')
                 {
                     Checkbox box = new Checkbox(line.substring(1), true);
+                    box.setPreferredSize(size);
                     box.addItemListener(bl);
                     right.add(box);
                 }
                 else
                 {
                     Checkbox box = new Checkbox(line, false);
+                    box.setPreferredSize(size);
                     box.addItemListener(bl);
                     left.add(box);
                 }
+
+                //append the line to fileContents
+                fileContents += line + System.lineSeparator();
             } 
             reader.close();
         }
@@ -161,7 +178,67 @@ public class GUI extends JFrame
      */
     public void move(Checkbox box, int to)
     {
-        
+        String name = box.getLabel();
+        //unmarking a Checkbox as incomplete/to-do
+        if(to == 1)
+        {
+            //leave box marked until verification
+            box.setState(true);
+
+            //request verification
+            int confirmation = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to remove " + name + "?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            
+            //JOPtionPane.YES_OPTION == 0
+            if(confirmation == 0)
+            {
+                box.setState(false);
+                //remove the * from the beginning of the line of the box's label
+                String temp = fileContents.substring(0, fileContents.indexOf(name) - 1);
+                temp += fileContents.substring(fileContents.indexOf(name));
+                
+                //write the new file contents to the file
+                try
+                {
+                    FileWriter writer = new FileWriter(file);
+                    writer.write(temp);
+                    writer.close();
+                }
+                catch(IOException ioe)
+                {
+                    System.out.println("Error writing to file");
+                }
+
+                //display updated file
+                display(file);
+
+                System.out.println("Moved " + box.getLabel() + " to To-Do"); 
+            }
+        }
+        //marking a Checkbox as complete
+        else if(to == 2)
+        {
+            //add a * to the beginning of the line of the box's label
+            String temp = fileContents.substring(0, fileContents.indexOf(name));
+            temp += "*" + fileContents.substring(fileContents.indexOf(name));
+            
+            //write the new file contents to the file
+            try
+            {
+                FileWriter writer = new FileWriter(file);
+                writer.write(temp);
+                writer.close();
+            }
+            catch(IOException ioe)
+            {
+                System.out.println("Error writing to file");
+            }
+
+            //display updated file
+            display(file);
+
+            System.out.println("Moved " + box.getLabel() + " to Completed");
+        }
     }//move method
 
 }//GUI class

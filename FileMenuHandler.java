@@ -33,18 +33,23 @@ public class FileMenuHandler implements ActionListener
         if (menuName.equals("Open"))
         {
             //opens the file finder
-            fc.showOpenDialog(null);
+            int option = fc.showOpenDialog(null);
 
-            //gets the path to the selected file
-            String file = fc.getSelectedFile().getName();
-            
-            //sets the title of the GUI
-            String title = file.substring(0, file.indexOf("."));
-            gui.setTitle(title.toUpperCase());
-            
-            //call display method off the GUI to display file contents
-            File f = new File(fc.getSelectedFile().getAbsolutePath());
-            gui.display(f);
+            if(option == JFileChooser.CANCEL_OPTION)
+                System.out.println("File Chooser was cancelled");
+            else if(option == JFileChooser.APPROVE_OPTION)
+            {
+                //gets the path to the selected file
+                String file = fc.getSelectedFile().getName();
+                
+                //removes the file extension and sets it as the title of the GUI
+                String title = file.substring(0, file.lastindexOf("."));
+                gui.setTitle(title.toUpperCase());
+                
+                //call display method off the GUI to display file contents
+                File f = new File(fc.getSelectedFile().getAbsolutePath());
+                gui.display(f);
+            }
         }
     } //actionPerformed
 
