@@ -43,7 +43,7 @@ public class FileMenuHandler implements ActionListener
                 String file = fc.getSelectedFile().getName();
                 
                 //removes the file extension and sets it as the title of the GUI
-                String title = file.substring(0, file.lastindexOf("."));
+                String title = file.substring(0, file.lastIndexOf("."));
                 gui.setTitle(title.toUpperCase());
                 
                 //call display method off the GUI to display file contents
