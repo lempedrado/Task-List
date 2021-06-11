@@ -33,8 +33,8 @@ public class InputHandler implements ActionListener
         try
         {
             File file = gui.file;
-            String text = gui.input.getText().strip() + System.lineSeparator();  //gets the content in the text field
-            gui.input.setText("");  //clears the text field
+            String text = gui.textField.getText().strip() + System.lineSeparator();  //gets the content in the text field
+            gui.textField.setText("");  //clears the text field
             //input must meet a minimum length to be submitted
             if(text.length() > 3)
             {

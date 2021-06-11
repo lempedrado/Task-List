@@ -15,23 +15,27 @@ public class GUI extends JFrame
 {
     /** GUI content */
     protected Container content;
-    
+
     /** User control interface */
     protected JPanel top = new JPanel();
-    
+
     /** Display interface */
     protected JPanel bottom = new JPanel();
-    
+
     /** To-Do and Completed item displays */
     protected JPanel left = new JPanel();
     protected JScrollPane leftScroll = new JScrollPane(left);
     protected JPanel right = new JPanel();
     protected JScrollPane rightScroll = new JScrollPane(right);
-    
+
     /** Item input field */
-    protected JTextField input = new JTextField(25);
+    protected JPanel input = new JPanel();
+    protected JTextField textField = new JTextField(25);
     protected File file;
     protected String fileContents;
+
+    protected JPanel buttons = new JPanel();
+    protected JTextPane decision = new JTextPane();
 
     /**
      *  GUI constructor
@@ -43,7 +47,7 @@ public class GUI extends JFrame
         setSize(950, 700);
         setLocation(100, 100);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         //adds a menu bar to open a file to read from
         JMenuBar menuBar = new JMenuBar();
         FileMenuHandler fmh = new FileMenuHandler(this);
@@ -58,7 +62,7 @@ public class GUI extends JFrame
         setVisible(true);
     }
 
-    
+
     /**
      *  Initializes JPanels for user operations and to display file contents
      */
@@ -71,21 +75,41 @@ public class GUI extends JFrame
         content.add(bottom);
 
         //user operation panel
-        top.setLayout(new FlowLayout(FlowLayout.CENTER));
+        top.setLayout(new GridLayout(3, 0));
         //top.setPreferredSize(new Dimension((int)getSize().getWidth(), 100));
         InputHandler ih = new InputHandler(this);
-        input.addActionListener(ih);
+        textField.addActionListener(ih);
+
+        //handles user input
         top.add(input);
+        input.add(textField);
 
         JButton button = new JButton("Add");
         ButtonHandler bh = new ButtonHandler(this);
         button.addActionListener(bh);
-        top.add(button);
+        input.add(button);
 
+        //operation buttons
+        top.add(buttons);
         button = new JButton("Edit");
         button.addActionListener(bh);
-        top.add(button);
+        buttons.add(button);
 
+        button = new JButton("Remove");
+        button.addActionListener(bh);
+        buttons.add(button);
+
+        button = new JButton("Complete");
+        button.addActionListener(bh);
+        buttons.add(button);
+
+        button = new JButton("Choose");
+        button.addActionListener(bh);
+        buttons.add(button);
+
+        //displays random choice from incomplete items
+        top.add(decision);
+        decision.setEditable(false);
 
         //adds bottom panel for file contents and adds two scrollpanes for the left and right panels
         bottom.setLayout(new GridLayout(0, 2));
@@ -102,14 +126,14 @@ public class GUI extends JFrame
         title2.setTitleJustification(TitledBorder.CENTER);
         title2.setTitlePosition(TitledBorder.TOP);
         rightScroll.setBorder(title2);
-        
+
 
         //to-do panel
         left.setLayout(new BoxLayout(left, BoxLayout.PAGE_AXIS));
         leftScroll.setLayout((new ScrollPaneLayout()));
         leftScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         leftScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        
+
         //completed panel
         right.setLayout(new BoxLayout(right, BoxLayout.PAGE_AXIS));
         rightScroll.setLayout(new ScrollPaneLayout());
@@ -123,7 +147,7 @@ public class GUI extends JFrame
     /**
      *  Reads in the passed file and creates 
      *  Checkbox items to add to the dispay panels.
-     *  
+     *
      *  @param f File to be read
      *
      *  @exception FileNotFoundException if the
@@ -150,6 +174,10 @@ public class GUI extends JFrame
             while(reader.hasNextLine())
             {
                 String line = reader.nextLine();
+
+                if(line.strip() == "")
+                    continue;
+
                 //creates a Checkbox from the line and adds it to the appropriate panel
                 if(line.charAt(0) == '*')
                 {
@@ -199,8 +227,8 @@ public class GUI extends JFrame
             //request verification
             int confirmation = JOptionPane.showConfirmDialog(this, 
             "Are you sure you want to remove \"" + name + "\"?", "Confirmation", JOptionPane.YES_NO_OPTION);
-            
-            //JOPtionPane.YES_OPTION == 0
+
+            //JOptionPane.YES_OPTION == 0
             if(confirmation == 0)
             {
                 box.setState(false);
@@ -244,5 +272,6 @@ public class GUI extends JFrame
         //display updated file
         display(file);
     }//write method
+
 
 }//GUI class

@@ -25,17 +25,10 @@ public class BoxHandler implements ItemListener
     public void itemStateChanged(ItemEvent e)
     {
         int state = e.getStateChange();
-        
-        //if an item is checked
-        if(state == 1)
-        {
-            gui.move((Checkbox)e.getItemSelectable(), 2);
-        }
+
         //if an item is unchecked
-        else if(state == 2)
-        {
+        if(state == 2)
             gui.move((Checkbox)e.getItemSelectable(), 1);
-        }
     }
 
 }
