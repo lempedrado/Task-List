@@ -181,7 +181,8 @@ public class GUI extends JFrame
                 //creates a Checkbox from the line and adds it to the appropriate panel
                 if(line.charAt(0) == '*')
                 {
-                    Checkbox box = new Checkbox(line.substring(1), true);
+                    //create a checkbox with a strikethrough label
+                    Checkbox box = new Checkbox("<html><s>" + line.substring(1) + "</s></html>", true);
                     box.setPreferredSize(size);
                     box.addItemListener(bl);
                     right.add(box);
@@ -223,6 +224,9 @@ public class GUI extends JFrame
         {
             //leave box marked until verification
             box.setState(true);
+
+            //remove html formatting from the Checkbox label
+            name = name.substring(name.indexOf("<s>") + 3, name.indexOf("</s>"));
 
             //request verification
             int confirmation = JOptionPane.showConfirmDialog(this, 

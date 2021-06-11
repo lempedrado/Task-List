@@ -69,7 +69,11 @@ public class ButtonHandler implements ActionListener
                 if(((Checkbox)(c)).getState())
                 {
                     //get the new name for this item
-                    String newName = JOptionPane.showInputDialog(null, "Enter a new name for " + ((Checkbox)c).getLabel());
+                    String label = ((Checkbox)c).getLabel();
+                    String newName = JOptionPane.showInputDialog("Enter a new name for " + label, label);
+                    //if option pane is cancelled or closed make no changes
+                    if(newName == null)
+                        continue;
                     
                     //compile new file contents
                     String temp = "";
@@ -81,7 +85,7 @@ public class ButtonHandler implements ActionListener
                         {
                             String line = reader.nextLine();
                             //replace the old name with the new name
-                            if(line.equals(((Checkbox)c).getLabel()))
+                            if(line.equals(label))
                                 temp += newName + System.lineSeparator();
                             //append the line to temp
                             else
