@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- *  Implements ItemListener to handle Checkbox item updates
+ *  Implements ItemListener to handle JCheckBox item updates
  *  
  *  @author Lloyd Empedrado
  */
@@ -18,7 +18,7 @@ public class BoxHandler implements ItemListener
     }//BoxListener constructor
 
     /**
-     *  Handles Checkbox being checked or unchecked
+     *  Handles JCheckBox being checked or unchecked
      *
      *  @param ItemEvent 
      */
@@ -28,7 +28,7 @@ public class BoxHandler implements ItemListener
 
         //if an item is unchecked
         if(state == 2)
-            gui.move((Checkbox)e.getItemSelectable(), 1);
+            gui.move((JCheckBox)e.getItemSelectable(), 1);
     }
 
 }

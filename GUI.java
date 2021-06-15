@@ -146,7 +146,7 @@ public class GUI extends JFrame
 
     /**
      *  Reads in the passed file and creates 
-     *  Checkbox items to add to the dispay panels.
+     *  JCheckBox items to add to the dispay panels.
      *
      *  @param f File to be read
      *
@@ -163,9 +163,8 @@ public class GUI extends JFrame
             //clears JPanels if try to display contents of a different file
             left.removeAll();
             right.removeAll();
-
-            //size of each checkbox
-            Dimension size = new Dimension(left.getWidth(), 10);
+            left.repaint();
+            right.repaint();
 
             //opens file and reads it line by line
             Scanner reader = new Scanner(f);
@@ -178,19 +177,17 @@ public class GUI extends JFrame
                 if(line.strip() == "")
                     continue;
 
-                //creates a Checkbox from the line and adds it to the appropriate panel
+                //creates a JCheckBox from the line and adds it to the appropriate panel
                 if(line.charAt(0) == '*')
                 {
                     //create a checkbox with a strikethrough label
-                    Checkbox box = new Checkbox("<html><s>" + line.substring(1) + "</s></html>", true);
-                    box.setPreferredSize(size);
+                    JCheckBox box = new JCheckBox("<html><s>" + line.substring(1) + "</s></html>", true);
                     box.addItemListener(bl);
                     right.add(box);
                 }
                 else
                 {
-                    Checkbox box = new Checkbox(line, false);
-                    box.setPreferredSize(size);
+                    JCheckBox box = new JCheckBox(line, false);
                     box.addItemListener(bl);
                     left.add(box);
                 }
@@ -209,23 +206,23 @@ public class GUI extends JFrame
     }//display method
 
     /**
-     *  Moves a marked Checkbox item to the Completed panel
-     *  or moves an unmarked Checkbox item to the To-Do panel.
-     *  Unmarking a Checkbox requires further verification before proceeding.
+     *  Moves a marked JCheckBox item to the Completed panel
+     *  or moves an unmarked JCheckBox item to the To-Do panel.
+     *  Unmarking a JCheckBox requires further verification before proceeding.
      *
-     *  @param Checkbox the item to be moved
-     *  @param to indicates which panel to move the Checkbox to
+     *  @param box the JCheckBox to be moved
+     *  @param to indicates which panel to move the JCheckBox to
      */
-    public void move(Checkbox box, int to)
+    public void move(JCheckBox box, int to)
     {
-        String name = box.getLabel();
-        //unmarking a Checkbox as incomplete/to-do
+        String name = box.getText();
+        //unmarking a JCheckBox as incomplete/to-do
         if(to == 1)
         {
             //leave box marked until verification
-            box.setState(true);
+            box.setEnabled(true);
 
-            //remove html formatting from the Checkbox label
+            //remove html formatting from the JCheckBox label
             name = name.substring(name.indexOf("<s>") + 3, name.indexOf("</s>"));
 
             //request verification
@@ -235,22 +232,22 @@ public class GUI extends JFrame
             //JOptionPane.YES_OPTION == 0
             if(confirmation == 0)
             {
-                box.setState(false);
+                box.setEnabled(false);
                 //remove the * from the beginning of the line of the box's label
                 String temp = fileContents.substring(0, fileContents.indexOf(name) - 1);
                 temp += fileContents.substring(fileContents.indexOf(name));
                 write(temp);
-                System.out.println("Moved " + box.getLabel() + " to To-Do"); 
+                System.out.println("Moved " + name + " to To-Do");
             }
         }
-        //marking a Checkbox as complete
+        //marking a JCheckBox as complete
         else if(to == 2)
         {
             //add a * to the beginning of the line of the box's label
             String temp = fileContents.substring(0, fileContents.indexOf(name));
             temp += "*" + fileContents.substring(fileContents.indexOf(name));
             write(temp);
-            System.out.println("Moved " + box.getLabel() + " to Completed");
+            System.out.println("Moved " + box.getText() + " to Completed");
         }
     }//move method
 

@@ -66,10 +66,10 @@ public class ButtonHandler implements ActionListener
         else if(name.equals("Edit"))
         {
             for(Component c : gui.left.getComponents())
-                if(((Checkbox)(c)).getState())
+                if(((JCheckBox)(c)).isSelected())
                 {
                     //get the new name for this item
-                    String label = ((Checkbox)c).getLabel();
+                    String label = ((JCheckBox)c).getText();
                     String newName = JOptionPane.showInputDialog("Enter a new name for " + label, label);
                     //if option pane is cancelled or closed make no changes
                     if(newName == null)
@@ -106,7 +106,7 @@ public class ButtonHandler implements ActionListener
         {
             //parse file and if line == label continue
             for(Component c : gui.left.getComponents())
-                if(((Checkbox)(c)).getState())
+                if(((JCheckBox)(c)).isSelected())
                 {
                     String temp = "";
                     File file = gui.file;
@@ -118,7 +118,7 @@ public class ButtonHandler implements ActionListener
                             String line = reader.nextLine();
 
                             //skip the line to be removed
-                            if(line.equals(((Checkbox)c).getLabel()))
+                            if(line.equals(((JCheckBox)c).getText()))
                                 continue;
 
                             //append the line to temp
@@ -138,14 +138,14 @@ public class ButtonHandler implements ActionListener
         {
             //for each checkbox in left panel if status==true call gui.move()
             for(Component c : gui.left.getComponents())
-                if(((Checkbox)(c)).getState())
-                    gui.move((Checkbox)c, 2);
+                if(((JCheckBox)(c)).isSelected())
+                    gui.move((JCheckBox)c, 2);
         }
         //chooses and displays a random item from the incomplete items
         else if(name.equals("Choose"))
         {
             int choice = (int)(Math.random() * gui.left.getComponentCount());
-            String label = ((Checkbox)(gui.left.getComponent(choice))).getLabel();
+            String label = ((JCheckBox)(gui.left.getComponent(choice))).getText();
             gui.decision.setText(label);
             gui.setVisible(true);
         }
