@@ -30,7 +30,7 @@ public class FileMenuHandler implements ActionListener
         String menuName = event.getActionCommand();
 
         //opens a JFileChooser for the user to choose a file to read in
-        if (menuName.equals("Open"))
+        if(menuName.equals("Open"))
         {
             //opens the file finder
             int option = fc.showOpenDialog(null);
@@ -50,6 +50,25 @@ public class FileMenuHandler implements ActionListener
                 File f = new File(fc.getSelectedFile().getAbsolutePath());
                 gui.display(f);
             }
+        }
+        else if(menuName.equals("New"))
+        {
+            String fileName = JOptionPane.showInputDialog(null, "Enter a name for the file you want to create.");
+            //add a file extension if there isn't one
+            if(fileName.indexOf(".") == -1)
+                fileName += ".txt";
+            //create the new file
+            File f = new File("./categories/" + fileName);
+            try
+            {
+                f.createNewFile();
+            }
+            catch(IOException e)
+            {
+                System.out.println("An error occurred creating the file.\n" + e);
+            }
+            gui.setTitle(fileName.substring(0, fileName.lastIndexOf(".")).toUpperCase());
+            gui.display(f);
         }
     } //actionPerformed
 

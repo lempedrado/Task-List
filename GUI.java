@@ -51,9 +51,15 @@ public class GUI extends JFrame
         //adds a menu bar to open a file to read from
         JMenuBar menuBar = new JMenuBar();
         FileMenuHandler fmh = new FileMenuHandler(this);
+        //opens a JFileChooser to select a file to read from
         JButton open = new JButton("Open");
         open.addActionListener(fmh);
         menuBar.add(open);
+
+        //create a new file to add items to
+        JButton newFile = new JButton("New");
+        newFile.addActionListener(fmh);
+        menuBar.add(newFile);
         setJMenuBar(menuBar);
 
         initialize();
